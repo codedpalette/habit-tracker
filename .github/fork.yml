@@ -1,0 +1,31 @@
+# Fork configuration, read by the fork skill and the fork-kit workflows.
+# Contract: https://github.com/codedpalette/fork-kit#forkyml
+schema: 1
+kit: v1
+kit-repo: "codedpalette/fork-kit"
+# owner/name
+upstream: "zincplusplus/habit-tracker"
+# Upstream's default branch, not kept in the fork
+mirror: "master"
+# Our default branch: upstream plus our patches
+trunk: "dev"
+# setup-node version for verify and build
+node: "22"
+sync:
+  # release | tag | tip
+  source: "release"
+  # Text before the version in upstream's tags, for example release-
+  tag-prefix: ""
+  verify: "npm ci && npm run build"
+release:
+  # Version = <upstream base>-<suffix>.<N>
+  suffix: "patched"
+  build: "npm run build"
+  # Only read for source: tip
+  version-file: "package.json"
+  # File -> jq filter, with $version defined
+  stamp: {"manifest.json":".version = $version | .name = \"Habit Tracker 21 (patched)\" | .id = \"habit-tracker-21-patched\""}
+  # Attached to the GitHub Release
+  assets: ["main.js","manifest.json","styles.css"]
+  # Force-added into a tag-only commit, for git-URL installs
+  commit: []
